@@ -1,6 +1,7 @@
 from calculator import get_numbers, addition, subtraction, multiplication, division
 import sys
  
+ 
 def main():
     while True:
         operations = {
@@ -17,20 +18,17 @@ def main():
             print(f"{key}. {name}")
         print("==========================")
  
- 
-        print("Masukkan selain angka di atas jika ingin keluar program!")
         choice = input("PILIH OPERASI => Masukkan Pilihan Anda: ")
         if choice not in operations.keys():
             sys.exit("Keluar Program!")
  
- 
         try:
             numbers = get_numbers()
- 
  
             operation_name, function_name = operations[choice]
             result = function_name(numbers)
             print(f"Hasil: {result}")
+            break
         except ValueError as ve:
             print(f"Terjadi kesalahan ValueError: {ve}")
             break
@@ -40,8 +38,6 @@ def main():
         except Exception as e:
             print(f"Terjadi kesalahan {e}")
             break
- 
- 
  
  
 if __name__ == "__main__":
