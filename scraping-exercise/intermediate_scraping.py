@@ -4,6 +4,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from transform import transform_data, transform_to_DataFrame
+from store_to_db import store_to_postgre
  
 HEADERS = {
     "User-Agent": (
@@ -76,13 +77,27 @@ def scrape_book(base_url, start_page=1, delay=2):
  
  
 def main():
-    """Fungsi utama untuk keseluruhan proses scraping hingga menyimpannya."""
+    """Fungsi utama untuk keseluruhan proses scraping, transformasi data, dan penyimpanan."""
     BASE_URL = 'https://books.toscrape.com/catalogue/page-{}.html'
+    
+    # Menjalankan scraping untuk mengambil data buku
     all_books_data = scrape_book(BASE_URL)
+    
+    # Jika data berhasil diambil, lakukan transformasi dan simpan ke PostgreSQL
     if all_books_data:
-        DataFrame = transform_to_DataFrame(all_books_data)   # Mengubah variabel all_books_data menjadi DataFrame.
-        DataFrame = transform_data(DataFrame, 20000)   # Mentransformasikan data
-        print(DataFrame)
+        try:
+            # Mengubah data menjadi DataFrame
+            DataFrame = transform_to_DataFrame(all_books_data)
+            
+            # Mentransformasikan data (misalnya konversi mata uang, rating, dll)
+            DataFrame = transform_data(DataFrame, 20000)  # Anggap 20000 adalah nilai tukar yang diperlukan
+ 
+            # Menyimpan data ke PostgreSQL
+            db_url = 'postgresql+psycopg2://developer:secretpassword@localhost:5432/booksdb'
+            store_to_postgre(DataFrame, db_url)  # Memanggil fungsi untuk menyimpan ke database
+ 
+        except Exception as e:
+            print(f"Terjadi kesalahan dalam proses: {e}")
     else:
         print("Tidak ada data yang ditemukan.")
  
