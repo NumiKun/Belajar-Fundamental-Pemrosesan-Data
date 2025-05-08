@@ -3,6 +3,7 @@ import time
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
+from transform import transform_data, transform_to_DataFrame
  
 HEADERS = {
     "User-Agent": (
@@ -78,8 +79,12 @@ def main():
     """Fungsi utama untuk keseluruhan proses scraping hingga menyimpannya."""
     BASE_URL = 'https://books.toscrape.com/catalogue/page-{}.html'
     all_books_data = scrape_book(BASE_URL)
-    df = pd.DataFrame(all_books_data)
-    print(df)
+    if all_books_data:
+        DataFrame = transform_to_DataFrame(all_books_data)   # Mengubah variabel all_books_data menjadi DataFrame.
+        DataFrame = transform_data(DataFrame, 20000)   # Mentransformasikan data
+        print(DataFrame)
+    else:
+        print("Tidak ada data yang ditemukan.")
  
  
 if __name__ == '__main__':
