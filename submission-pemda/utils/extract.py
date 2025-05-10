@@ -1,12 +1,19 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import requests
 from bs4 import BeautifulSoup
 import csv
 from datetime import datetime
+from utils.transform import transform_data 
+from utils.load import save_to_postgresql_and_sheets
+import pandas as pd
 
 def extract_data():
     all_data = []
-    
-    extraction_timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    extraction_timestamp = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
     
     url_first_page = 'https://fashion-studio.dicoding.dev/'
     try:
@@ -17,7 +24,6 @@ def extract_data():
     except requests.exceptions.RequestException as e:
         print(f"Error retrieving the first page: {e}")
     
-    # Halaman 2 hingga 50
     for page_num in range(2, 51):
         url = f'https://fashion-studio.dicoding.dev/page{page_num}'
         try:
@@ -30,6 +36,17 @@ def extract_data():
     
     save_to_csv(all_data)
 
+    transformed_df = transform_data('products.csv')
+    
+    print(transformed_df.head())
+
+    save_transformed_data(transformed_df, 'products.csv')
+
+    save_to_postgresql_and_sheets(transformed_df, db_url='postgresql://surya:surya2003@localhost:5432/submissiondb', spreadsheet_name='1xTuV-oBslKY0l83Ua0xgDLt3zMm92SnKzxHJ9QalcEU', sheet_name='Sheet1')
+
+    df = pd.DataFrame(all_data, columns=['Title', 'Price', 'Rating', 'Colors', 'Size', 'Gender', 'Timestamp'])
+
+    return df
 def process_page(soup, all_data, timestamp):
     products = soup.find_all('div', class_='collection-card')
     
@@ -55,15 +72,22 @@ def process_page(soup, all_data, timestamp):
         except Exception as e:
             print(f"Error processing product: {e}")
 
+
 def save_to_csv(data):
     try:
         header = ['Title', 'Price', 'Rating', 'Colors', 'Size', 'Gender', 'Timestamp']
-        with open('submission-pemda/products.csv', mode='w', newline='', encoding='utf-8') as file:
+        with open('products.csv', mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow(header)
             writer.writerows(data)
-        print("Data successfully saved to 'products.csv'.")
     except Exception as e:
         print(f"Error saving data to CSV: {e}")
+
+def save_transformed_data(df, output_file):
+    try:
+        df.to_csv(output_file, index=False)
+        print(f"Data berhasil disimpan ke {output_file}")
+    except Exception as e:
+        print(f"Gagal menyimpan data: {e}")
 
 extract_data()

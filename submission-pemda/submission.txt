@@ -1,0 +1,40 @@
+>> Kalo Menggunakan Virtual Environment <<
+Untuk memastikan dependencies berjalan dengan baik, ikuti langkah-langkah berikut:
+
+1️⃣ Buat Virtual Environment
+Di direktori proyek, jalankan perintah berikut:
+python -m venv .env
+
+2️⃣ Aktifkan Virtual Environment
+- Di Windows:
+.env\Scripts\activate
+
+- Di macOS/Linux:
+source .env/bin/activate
+
+3️⃣ Install Dependencies
+Pastikan virtual environment aktif, kemudian jalankan:
+pip install -r requirements.txt
+
+4️⃣ Jalankan Skrip ETL Pipeline
+Pastikan berada di direktori proyek dan virtual environment aktif, lalu jalankan:
+python main.py
+
+5️⃣ Jalankan Unit Test
+Untuk menguji modul secara terpisah, gunakan:
+python -m unittest tests/test_extract.py
+python -m unittest tests/test_transform.py
+python -m unittest tests/test_load.py
+
+6️⃣ Jalankan Test Coverage
+coverage run -m unittest discover -s tests
+coverage report
+
+7️⃣ Menonaktifkan Virtual Environment
+Jika ingin menonaktifkan, gunakan perintah:
+deactivate
+
+>> Kalo tidak menggunakan Virtual Environment <<
+Bisa langsung ikuti langkah 4 sampai 6.
+
+Link Google Sheets 👉👉 https://docs.google.com/spreadsheets/d/1xTuV-oBslKY0l83Ua0xgDLt3zMm92SnKzxHJ9QalcEU/edit?gid=0#gid=0
