@@ -35,6 +35,6 @@ Jika ingin menonaktifkan, gunakan perintah:
 deactivate
 
 >> Kalo tidak menggunakan Virtual Environment <<
-Bisa langsung ikuti langkah 4 sampai 6.
+Bisa langsung ikuti langkah 3 sampai 6.
 
 Link Google Sheets 👉👉 https://docs.google.com/spreadsheets/d/1xTuV-oBslKY0l83Ua0xgDLt3zMm92SnKzxHJ9QalcEU/edit?gid=0#gid=0
